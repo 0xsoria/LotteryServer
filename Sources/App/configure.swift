@@ -6,8 +6,6 @@ import Vapor
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-
-    let databasePort = Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber
     
     if var config = Environment.get("DATABASE_URL")
         .flatMap(URL.init)
@@ -18,18 +16,13 @@ public func configure(_ app: Application) throws {
         configuration: config
       ), as: .psql)
     } else {
-      app.databases.use(
-        .postgres(
-          hostname: Environment.get("DATABASE_HOST") ??
-            "localhost",
-          port: databasePort,
-          username: Environment.get("DATABASE_USERNAME") ??
-            "vapor_username",
-          password: Environment.get("DATABASE_PASSWORD") ??
-            "vapor_password",
-          database: Environment.get("DATABASE_NAME") ??
-            "vapor_database"),
-        as: .psql)
+        app.databases.use(.postgres(
+            hostname: Environment.get("DATABASE_HOST") ?? "localhost",
+            port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber,
+            username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
+            password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+            database: Environment.get("DATABASE_NAME") ?? "vapor_database"
+        ), as: .psql)
     }
 
     app.migrations.add(CreateMetric())
