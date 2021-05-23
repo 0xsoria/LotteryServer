@@ -11,7 +11,7 @@ struct CreateMetric: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         database.schema("metric")
             .id()
-            .field("data", .string, .required)
+            .field("data", .data, .required)
             .create()
     }
     

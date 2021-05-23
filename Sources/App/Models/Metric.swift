@@ -16,11 +16,11 @@ final class Metric: Model {
     var id: UUID?
     
     @Field(key: "data")
-    var data: String
+    var data: Data
     
     init() {}
     
-    init(id: UUID? = nil, data: String) {
+    init(id: UUID? = nil, data: Data) {
         self.id = id
         self.data = data
     }
