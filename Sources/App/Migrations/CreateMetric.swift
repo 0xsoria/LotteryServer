@@ -43,3 +43,4 @@ struct CreateMetric: Migration {
         database.schema("metric").delete()
     }
 }
+
