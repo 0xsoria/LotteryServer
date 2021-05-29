@@ -43,3 +43,4 @@ struct MetricsController: RouteCollection {
             }
     }
 }
+
