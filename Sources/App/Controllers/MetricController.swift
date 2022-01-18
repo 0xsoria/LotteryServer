@@ -15,6 +15,7 @@ struct MetricsController: RouteCollection {
         metricRoutes.post(use: createHandler)
         metricRoutes.get(":metricID", use: getHandler)
         metricRoutes.delete(":metricID", use: deleteHandler)
+        metricRoutes.delete("metrics", use: deleteAll)
     }
     
     func getAllHandler(_ req: Request) -> EventLoopFuture<[Metric]> {
@@ -37,6 +38,14 @@ struct MetricsController: RouteCollection {
     func deleteHandler(_ req: Request) -> EventLoopFuture<HTTPStatus> {
         Metric.find(req.parameters.get("metricID"), on: req.db)
             .unwrap(or: Abort(.notFound))
+            .flatMap { metric in
+                metric.delete(on: req.db)
+                    .transform(to: .noContent)
+            }
+    }
+    
+    func deleteAll(_ req: Request) -> EventLoopFuture<HTTPStatus> {
+        Metric.query(on: req.db).all()
             .flatMap { metric in
                 metric.delete(on: req.db)
                     .transform(to: .noContent)

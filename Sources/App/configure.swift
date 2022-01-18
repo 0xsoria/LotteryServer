@@ -26,6 +26,7 @@ public func configure(_ app: Application) throws {
     }
 
     app.migrations.add(CreateMetric())
+    app.migrations.add(CreateAnalytics())
     app.logger.logLevel = .debug
     try app.autoMigrate().wait()
 
